@@ -4,38 +4,17 @@ import { z } from "zod"
 import { weatherDataSchema } from "../validations"
 import { Image } from "blitz"
 
-// correct way to create schema / type??
+// capitalize types and schema, move to validations file
 type weatherDataType = z.infer<typeof weatherDataSchema>
-
-// interface weatherDataType {
-//   main: {
-//     temp: number,
-//     temp_min: number,
-//     temp_max: number,
-//   },
-//   sys: {
-//     sunrise: number,
-//     sunset: number,
-//   },
-//   weather: [
-//     {
-//       main: string,
-//       description: string,
-//       icon: string,
-//     },
-//   ],
-//   wind: {
-//     speed: number,
-//     deg: number,
-//   },
-// }
 
 interface AppProps {
   zipcode?: number
   changeLocation: Function
 }
 
-// need help setting type of state
+// npm install for degrees to cardinal directions
+let d2d = require("degrees-to-direction")
+
 export const WeatherDisplay = (props: AppProps) => {
   const [weatherData, setWeatherData] = useState<weatherDataType>()
 
@@ -67,22 +46,6 @@ export const WeatherDisplay = (props: AppProps) => {
   //   setWeatherData(data);
   // }
 
-  // would pull convertTemp & convertDate into useMemo if expensive
-  // converts kelvin temp to farenheight
-  function convertTemp(temp: number) {
-    return Math.round(1.8 * (temp - 273) + 32)
-  }
-
-  // converts unix date from weatherData to date string
-  function convertDate(unixDate: number) {
-    return new Date(unixDate * 1000)
-  }
-
-  useEffect(() => {
-    if (!weatherData) return
-    props.changeLocation(weatherData.name)
-  }, [weatherData, props])
-
   // make API call on server & blitz query
   // GOT instead of fetch - npm library to install (only works on server)
   // push to end of URL
@@ -106,6 +69,12 @@ export const WeatherDisplay = (props: AppProps) => {
     getWeather()
   }, [props.zipcode])
 
+  // raises location name from API reponse to search bar
+  useEffect(() => {
+    if (!weatherData) return
+    props.changeLocation(weatherData.name)
+  }, [weatherData, props])
+
   // for troubleshooting while building
   function handleClick() {
     if (!weatherData) return
@@ -117,50 +86,120 @@ export const WeatherDisplay = (props: AppProps) => {
     return `http://openweathermap.org/img/wn/${src}@2x.png`
   }
 
-  // const imgURL = "http://openweathermap.org/img/wn/10d@2x.png"
-
   return (
-    // will create weather cards & format values
+    // set first row of grid in cards as fixed height
     <>
-      <div className="shadow-sm shadow-black p-1 m-1 border-2 border-slate-400 rounded bg-slate-400 w-3/4 h-96 flex items-center justify-center">
+      <div className="shadow-sm shadow-black p-1 m-1 border-4 border-slate-600 border-solid rounded-lg bg-slate-300 w-3/4 h-96 grid grid-cols-3 gap-x-4 p-5">
         {weatherData ? (
           <>
-            <div id="weather-card">
-              <div>Weather</div>
-              <div>{weatherData.weather[0].main}</div>
-              <div>{weatherData.weather[0].description}</div>
+            <div
+              id="weather-card"
+              className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-5 bg-slate-400"
+            >
+              <div className="text-xl font-bold underline">Weather</div>
+              <div>
+                <div>Current Conditions:</div>
+                <div className="text-center">{weatherData.weather[0].main}</div>
+              </div>
+              <div>
+                <div>Condition Details:</div>
+                <div className="text-center capitalize">{weatherData.weather[0].description}</div>
+              </div>
+              {/* set Image unoptimized property*/}
               <Image
                 loader={iconLoader}
                 src={weatherData.weather[0].icon}
                 alt="icon displaying current weather"
-                width={40}
-                height={40}
+                width={60}
+                height={60}
               />
             </div>
-            <div id="temperature-card">
-              <div>Temperature</div>
-              <div> {convertTemp(weatherData.main.temp)}</div>
-              <div> {convertTemp(weatherData.main.temp_max)}</div>
-              <div> {convertTemp(weatherData.main.temp_min)}</div>
-            </div>
-            <div id="time-wind-card">
-              <div>Misc</div>
-              <div>{weatherData.sys.sunrise}</div>
-              <div>{weatherData.sys.sunset}</div>
+            <div
+              id="temperature-card"
+              className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center p-5 bg-slate-400"
+            >
+              <div className="text-xl font-bold underline">Temperature</div>
               <div>
-                {" "}
-                {weatherData.wind.deg} and {weatherData.wind.speed}
+                <div>Current Temperature:</div>
+                <div className="text-center">{convertTemp(weatherData.main.temp)}° F</div>
+              </div>
+              <div>
+                <div>Temperature High:</div>
+                <div className="text-center">{convertTemp(weatherData.main.temp_max)}° F</div>
+              </div>
+              <div>
+                <div>Temperature Low:</div>{" "}
+                <div className="text-center">{convertTemp(weatherData.main.temp_min)}° F</div>
+              </div>
+            </div>
+            <div
+              id="time-wind-card"
+              className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center p-5 bg-slate-400"
+            >
+              <div className="text-xl font-bold underline text-center">Sunrise/Sunset & Wind</div>
+              <div>
+                <div className="text-center">Today&apos;s Sunrise at:</div>
+                <div className="text-center">{convertDate(weatherData.sys.sunrise)}</div>
+              </div>
+              <div>
+                <div className="text-center">Today&apos;s Sunset at:</div>
+                <div className="text-center">{convertDate(weatherData.sys.sunset)}</div>
+              </div>
+              <div className="text-center">
+                <div>Wind:</div>
+                <div className="text-center">
+                  {convertMPS(weatherData.wind.speed)} MPH from the {d2d(weatherData.wind.deg)}
+                </div>
               </div>
             </div>
           </>
         ) : (
           // ternary operator loading screen
-          <div>Loading...</div>
+          <>
+            <div
+              id="weather-card"
+              className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center"
+            ></div>
+            <div
+              id="temperature-card"
+              className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center"
+            >
+              <div>Loading...</div>
+            </div>
+            <div
+              id="time-wind-card"
+              className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center"
+            ></div>
+          </>
         )}
       </div>
       <button onClick={handleClick}>Forecast</button>
     </>
   )
+}
+
+// put these in useMemo
+// & add conversion in Zod Schema
+
+// converts kelvin temp to farenheit
+function convertTemp(temp: number) {
+  return Math.round(1.8 * (temp - 273) + 32)
+}
+
+// converts unix date from weatherData to date string
+function convertDate(unixDate: number) {
+  let date = new Date(unixDate * 1000)
+  if (date.getHours() > 12) {
+    return [date.getHours() - 12, ":", ("0" + date.getMinutes()).slice(-2), " PM"].join("")
+  }
+  return [("0" + date.getHours()).slice(-2), ":", ("0" + date.getMinutes()).slice(-2), " AM"].join(
+    ""
+  )
+}
+
+// converts meters/second to MPH
+function convertMPS(speed: number) {
+  return Math.round(speed * 2.2369)
 }
 
 export default WeatherDisplay
