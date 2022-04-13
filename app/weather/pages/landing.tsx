@@ -1,5 +1,5 @@
 import { BlitzPage } from "blitz"
-import SearchBar from "../components/SearchBar"
+import SearchBar from "../components/searchBar"
 import { useState, useEffect } from "react"
 
 // may need to refactor props for searchbar

@@ -1,4 +1,4 @@
-import SavedCard from "./SavedCard"
+import SavedCard from "./savedCard"
 import { useEffect, useState } from "react"
 
 interface AppProps {
