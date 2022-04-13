@@ -10,11 +10,23 @@ import { number, z } from "zod"
 // store zipcode in url
 // query Router.push
 
-const SearchBar: BlitzPage = () => {
+// if authenticated
+interface AppProps {
+  changeArea: Function
+}
+
+const SearchBar = (props: AppProps) => {
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
 
-  // is this incorrect? child is raising value and triggers change in parent state
+  // if authenticated user
+  function dashboardLocation() {}
+
+  useEffect(() => {
+    if (!zipcode || !location) return
+    props.changeArea(location, zipcode)
+  }, [zipcode, location, props])
+
   function changeLocation(name: string) {
     setLocation(name)
   }

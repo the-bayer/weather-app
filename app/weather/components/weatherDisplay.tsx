@@ -75,12 +75,12 @@ export const WeatherDisplay = (props: AppProps) => {
     props.changeLocation(weatherData.name)
   }, [weatherData, props])
 
-  // for troubleshooting while building
-  function handleClick() {
-    if (!weatherData) return
-    console.log(weatherData.main)
-    console.log(weatherData)
-  }
+  // // for troubleshooting while building
+  // function handleClick() {
+  //   if (!weatherData) return
+  //   console.log(weatherData.main)
+  //   console.log(weatherData)
+  // }
 
   const iconLoader = ({ src }: { src: string }) => {
     return `http://openweathermap.org/img/wn/${src}@2x.png`
@@ -173,7 +173,7 @@ export const WeatherDisplay = (props: AppProps) => {
           </>
         )}
       </div>
-      <button onClick={handleClick}>Forecast</button>
+      {/* <button onClick={handleClick}>Forecast</button> */}
     </>
   )
 }
