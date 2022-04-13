@@ -2,6 +2,7 @@ import { z } from "zod"
 
 export const zipcode = z.string()
 
+// schema throws error if array is fed into tuple
 export const weatherDataSchema = z.object({
   main: z.object({
     temp: z.number(),
@@ -12,13 +13,13 @@ export const weatherDataSchema = z.object({
     sunrise: z.number(),
     sunset: z.number(),
   }),
-  weather: z.array(
+  weather: z.tuple([
     z.object({
       main: z.string(),
       description: z.string(),
       icon: z.string(),
-    })
-  ),
+    }),
+  ]),
   wind: z.object({
     speed: z.number(),
     deg: z.number(),

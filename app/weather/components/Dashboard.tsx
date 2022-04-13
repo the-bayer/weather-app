@@ -1,5 +1,5 @@
 import SavedCard from "./savedCard"
-import { useEffect, useState } from "react"
+import { useEffect, useState, MouseEvent } from "react"
 import { object } from "zod"
 
 interface AppProps {
@@ -7,9 +7,15 @@ interface AppProps {
   zipcode?: number
 }
 
+interface Card {
+  location?: string
+  zipcode?: number
+  key?: number
+}
+
 export const DashBoard = (props: AppProps) => {
   // Edit TS here: create Zod schema?
-  const [cards, setCards] = useState<any>([])
+  const [cards, setCards] = useState<Card[]>([])
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
 
@@ -18,13 +24,12 @@ export const DashBoard = (props: AppProps) => {
     setLocation(props.location)
   }, [props, zipcode, location])
 
-  // Edit TS
-  function removeCard(e) {
-    // e.target.name - object is possibly null??
+  // Edit TS - mouseevent does not work
+  function removeCard(e: any) {
     // can refactor here if needed
-    const badCard = cards.findIndex((card) => card.zipcode === Number(e.target.name))
+    const badCard = cards.findIndex((card: Card) => card.zipcode === Number(e.target.name))
 
-    setCards(cards.filter((card: object, index: number) => index != badCard))
+    setCards(cards.filter((card: Card, index: number) => index != badCard))
   }
 
   function createCard() {
