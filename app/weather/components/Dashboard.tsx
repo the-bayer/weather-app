@@ -1,5 +1,6 @@
 import SavedCard from "./savedCard"
 import { useEffect, useState } from "react"
+import { object } from "zod"
 
 interface AppProps {
   location?: string
@@ -8,45 +9,82 @@ interface AppProps {
 
 export const DashBoard = (props: AppProps) => {
   // Edit TS here: create Zod schema?
-  const [cards, setCards] = useState<Array<any | undefined>>()
+  const [cards, setCards] = useState<any>([])
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
 
-  function removeCard(zipcode: any) {
-    // const badCard = cards?.find(card => card.props.location === `${zipcode}`)
-    // console.log(badCard);
-    console.log("hello")
+  useEffect(() => {
+    setZipcode(props.zipcode)
+    setLocation(props.location)
+  }, [props, zipcode, location])
+
+  // Edit TS
+  function removeCard(e) {
+    // e.target.name - object is possibly null??
+    // can refactor here if needed
+    const badCard = cards.findIndex((card) => card.zipcode === Number(e.target.name))
+
+    setCards(cards.filter((card: object, index: number) => index != badCard))
   }
 
-  function handleClick() {
-    if (!props.zipcode) return
-    console.log("hello")
-  }
+  function createCard() {
+    // prevents duplicate cards
+    for (let card of cards) {
+      if (zipcode === card.zipcode) {
+        console.log("card already exists")
+        return
+      }
+    }
 
-  function handleEvent() {
     setCards([
-      <SavedCard location={location} zipcode={zipcode} key={location} removeCard={removeCard} />,
+      ...cards,
+      {
+        location: location,
+        zipcode: zipcode,
+        key: zipcode,
+      },
     ])
   }
+
+  function handleEvent() {}
 
   // useEffect(() => {
   //   console.log(cards)
   // }, [cards])
 
+  // need to format scrollbar
   return (
     <>
-      <div className="bg-slate-500 w-3/4 h-20 flex items-center justify-center border-4 border-slate-400 rounded shadow-sm shadow-black p-1 m-1">
-        <button className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400">
-          Add Current Location To Favorites
+      <div className="bg-slate-500 w-3/4 h-1/8 flex items-center justify-center border-4 border-slate-400 rounded shadow-sm shadow-black m-1 box-border">
+        <button
+          className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 place-self-start m-2"
+          onClick={createCard}
+        >
+          Add Location To Favorites
         </button>
         <div>
-          {cards?.map((card) => {
-            console.log(card)
-            return card
-          })}
+          <ul className="flex flex-row overflow-x-scroll">
+            {cards
+              ? cards.map((card: any) => {
+                  return (
+                    <li
+                      id="location-card"
+                      className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 m-2 w-44"
+                      key={card.key}
+                    >
+                      <div className="text-center">Location: {card.location}</div>
+                      <div className="text-center">Zipcode: {card.zipcode}</div>
+                      <button onClick={removeCard} name={card.zipcode} className="text-center">
+                        Remove Card
+                      </button>
+                    </li>
+                  )
+                })
+              : "Loading"}
+          </ul>
         </div>
       </div>
-      <button onClick={handleClick}>Create Card</button>
+      <button>New Event</button>
       <button onClick={handleEvent}>Handle Event</button>
     </>
   )

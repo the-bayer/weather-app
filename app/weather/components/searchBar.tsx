@@ -15,18 +15,19 @@ interface AppProps {
   changeArea: Function
 }
 
-const SearchBar = (props: AppProps) => {
+const SearchBar = ({ changeArea }: AppProps) => {
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
 
   // if authenticated user
-  function dashboardLocation() {}
+  // function dashboardLocation() {}
 
+  // callback to raise state values to userdashboard
   useEffect(() => {
-    if (!zipcode || !location) return
-    props.changeArea(location, zipcode)
-  }, [zipcode, location, props])
+    changeArea(location, zipcode)
+  }, [zipcode, location, changeArea])
 
+  // callback to retrieve location name from weatherDisplay
   function changeLocation(name: string) {
     setLocation(name)
   }

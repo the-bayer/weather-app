@@ -5,6 +5,8 @@ import { weatherDataSchema } from "../validations"
 import { Image } from "blitz"
 
 // capitalize types and schema, move to validations file
+// object possible undefined after changing schema from tuple to array
+// ternary operator should safeguard against this?? idk
 type weatherDataType = z.infer<typeof weatherDataSchema>
 
 interface AppProps {

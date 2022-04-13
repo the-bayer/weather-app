@@ -12,13 +12,13 @@ export const weatherDataSchema = z.object({
     sunrise: z.number(),
     sunset: z.number(),
   }),
-  weather: z.tuple([
+  weather: z.array(
     z.object({
       main: z.string(),
       description: z.string(),
       icon: z.string(),
-    }),
-  ]),
+    })
+  ),
   wind: z.object({
     speed: z.number(),
     deg: z.number(),

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 
 // may need to refactor props for searchbar
 const Landing: BlitzPage = () => {
+  // top level state
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
 

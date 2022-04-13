@@ -1,13 +1,15 @@
 import { BlitzPage } from "blitz"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import DashBoard from "../components/dashboard"
 import SearchBar from "../components/searchBar"
 
 const UserDashBoard: BlitzPage = () => {
   // prop drilling alternative??
+  // top level state (all components should read from this state)
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
 
+  // callback from searchbar to change state
   function changeArea(name: string, number: number) {
     setLocation(name)
     setZipcode(number)
