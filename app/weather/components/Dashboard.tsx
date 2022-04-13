@@ -1,6 +1,6 @@
-import SavedCard from "./savedCard"
 import { useEffect, useState, MouseEvent } from "react"
-import { object } from "zod"
+import { useMutation } from "blitz"
+import createArea from "../../areas/mutations/createArea"
 
 interface AppProps {
   location?: string
@@ -14,6 +14,7 @@ interface Card {
 }
 
 export const DashBoard = (props: AppProps) => {
+  const [createAreaMutation] = useMutation(createArea)
   // Edit TS here: create Zod schema?
   const [cards, setCards] = useState<Card[]>([])
   const [zipcode, setZipcode] = useState<number>()
@@ -49,6 +50,14 @@ export const DashBoard = (props: AppProps) => {
         key: zipcode,
       },
     ])
+
+    ;async (location: any, zipcode: any) => {
+      try {
+        await createAreaMutation(location, zipcode)
+      } catch (error) {
+        console.log(error)
+      }
+    }
   }
 
   function handleEvent() {}
