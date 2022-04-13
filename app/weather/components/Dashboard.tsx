@@ -1,5 +1,4 @@
-import SearchBar from "./searchBar"
-import SavedCard from "./savedCard"
+import SavedCard from "./SavedCard"
 import { useEffect, useState } from "react"
 
 interface AppProps {
