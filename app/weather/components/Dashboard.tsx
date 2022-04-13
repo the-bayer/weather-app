@@ -19,11 +19,10 @@ export const DashBoard = (props: AppProps) => {
     console.log("hello")
   }
 
-  // function handleClick() {
-  //   if (!props.zipcode) return
-  //   setZipcode(props.zipcode)
-  //   setLocation(props.location)
-  // }
+  function handleClick() {
+    if (!props.zipcode) return
+    console.log("hello")
+  }
 
   function handleEvent() {
     setCards([
