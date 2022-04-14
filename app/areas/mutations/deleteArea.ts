@@ -14,8 +14,13 @@ export default resolver.pipe(
     // TODO: in multi-tenant app, you must add validation to ensure correct tenant
     const user = await db.user.findFirst({ where: { id: id } })
     if (!user) return
+    const zipcode = badZip
+    if (!zipcode) return
 
-    const area = await db.area.deleteMany({ where: { zipcode: badZip, userId: user.id } })
+    const badArea = await db.area.findFirst({ where: { zipcode: zipcode, userId: user.id } })
+    if (!badArea) return
+    // add error
+    const area = await db.area.delete({ where: { id: badArea.id } })
 
     return area
   }

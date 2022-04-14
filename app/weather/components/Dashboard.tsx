@@ -1,8 +1,9 @@
 import { useEffect, useState, MouseEvent, Suspense } from "react"
-import { useMutation, useSession } from "blitz"
+import { useMutation, useQuery, useSession } from "blitz"
 import createArea from "../../areas/mutations/createArea"
 import deleteArea from "app/areas/mutations/deleteArea"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import getUserAreas from "app/areas/queries/getUserAreas"
 
 interface AppProps {
   location?: string
@@ -14,7 +15,7 @@ interface Card {
   zipcode?: number
 }
 
-export const DashBoard = (props: AppProps) => {
+const DashBoard = (props: AppProps) => {
   // Edit TS here: create Zod schema?
   const [cards, setCards] = useState<Card[]>([])
   const [zipcode, setZipcode] = useState<number>()
@@ -22,8 +23,21 @@ export const DashBoard = (props: AppProps) => {
   // const currentUser = useCurrentUser()
   const [createAreaMutation] = useMutation(createArea)
   const [deleteAreaMutation] = useMutation(deleteArea)
+  const [userId, setUserId] = useState<number>()
+  const [rerender, setRerender] = useState(false)
+  // I know this is bad ^, just trying to get it to work for now
   const session = useSession()
 
+  // how do I ensure that id will not be undefined
+  const [userAreas] = useQuery(getUserAreas, { id: userId })
+
+  // sets user ID
+  useEffect(() => {
+    if (!session.userId) return
+    setUserId(session.userId)
+  }, [userId, session])
+
+  // sets state on searchbar entry
   useEffect(() => {
     setZipcode(props.zipcode)
     setLocation(props.location)
@@ -33,50 +47,68 @@ export const DashBoard = (props: AppProps) => {
   function removeCard(e: any) {
     const id = session.userId
     // can refactor here if needed
+
+    const badZip = Number(e.target.name)
+    if (!badZip || !id) return
+    deleteAreaMutation({ badZip, id })
+
     const badCard = cards.find((card: Card) => card.zipcode === Number(e.target.name))
-    const badZip = badCard?.zipcode
     const badCardIndex = cards.findIndex((card: Card) => card.zipcode === Number(e.target.name))
     setCards(cards.filter((card: Card, index: number) => index != badCardIndex))
+  }
 
-    if (!badZip || !id) return
+  const createdatabaseCard = async () => {
+    // add validation here?
+    const id = session.userId
+    if (!location || !zipcode || !id) return
+    // seems like there is a better way to do this
 
-    deleteAreaMutation({ badZip, id })
+    try {
+      await createAreaMutation({ location, zipcode, id })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   // displays new favorite and updates database
-  function createCard() {
+  async function createCard() {
     // prevents duplicate cards
+    let areaExists = false
     for (let card of cards) {
       if (zipcode === card.zipcode) {
         console.log("card already exists")
+        areaExists = true
         return
       }
     }
 
-    setCards([
-      ...cards,
-      {
-        location: location,
-        zipcode: zipcode,
-      },
-    ])
-
-    const databaseCard = async () => {
-      // add validation here?
-      const id = session.userId
-      if (!location || !zipcode || !id) return
-      // seems like there is a better way to do this
-
-      try {
-        await createAreaMutation({ location, zipcode, id })
-      } catch (error) {
-        console.log(error)
+    if (userAreas) {
+      for (let area of userAreas) {
+        if (zipcode === area.zipcode) {
+          console.log("card already exists")
+          areaExists = true
+          console.log(areaExists)
+          return
+        }
       }
     }
-    databaseCard()
+
+    if (!areaExists) {
+      setCards([
+        ...cards,
+        {
+          location: location,
+          zipcode: zipcode,
+        },
+      ])
+      await createdatabaseCard()
+    }
+    // databaseCard();
   }
 
-  function handleEvent() {}
+  function handleEvent() {
+    console.log(userAreas)
+  }
 
   // useEffect(() => {
   //   console.log(cards)
@@ -94,6 +126,27 @@ export const DashBoard = (props: AppProps) => {
         </button>
         <div>
           <ul className="flex flex-row overflow-x-scroll">
+            {userAreas
+              ? userAreas.map((area) => {
+                  return (
+                    <li
+                      id="location-card"
+                      className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 m-2 w-44"
+                      key={area.zipcode}
+                    >
+                      <div className="text-center">Location: {area.location}</div>
+                      <div className="text-center">Zipcode: {area.zipcode}</div>
+                      <button
+                        onClick={removeCard}
+                        name={String(area.zipcode)}
+                        className="text-center"
+                      >
+                        Remove Card
+                      </button>
+                    </li>
+                  )
+                })
+              : ""}
             {cards
               ? cards.map((card: any) => {
                   return (
@@ -119,5 +172,8 @@ export const DashBoard = (props: AppProps) => {
     </>
   )
 }
+
+DashBoard.authenticate = true
+DashBoard.suppressFirstRenderFlicker = true
 
 export default DashBoard
