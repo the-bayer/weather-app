@@ -1,5 +1,5 @@
 import { BlitzPage } from "blitz"
-import { useEffect, useState } from "react"
+import { Suspense, useEffect, useState } from "react"
 import DashBoard from "../components/dashboard"
 import SearchBar from "../components/searchBar"
 
@@ -18,7 +18,10 @@ const UserDashBoard: BlitzPage = () => {
   return (
     <div className="flex flex-col place-items-center justify-center w-screen h-screen bg-slate-200">
       <SearchBar changeArea={changeArea} />
-      <DashBoard zipcode={zipcode} location={location} />
+      {/* Why do I need a suspense component */}
+      <Suspense fallback="Loading...">
+        <DashBoard zipcode={zipcode} location={location} />
+      </Suspense>
     </div>
   )
 }

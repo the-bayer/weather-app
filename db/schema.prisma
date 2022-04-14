@@ -72,6 +72,6 @@ model Area {
   updatedAt DateTime @updatedAt
   zipcode   Int
   location  String
-  user      User?    @relation(fields: [userId], references: [id])
-  userId    Int?
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
 }

@@ -11,3 +11,8 @@ export default async function getCurrentUser(_ = null, { session }: Ctx) {
 
   return user
 }
+
+//ERROR Failed to load /Users/blake/Documents/blitz/weather-app/app/areas/mutations/createArea.ts: TSError: ⨯ Unable to compile TypeScript:
+// app/users/queries/getCurrentUser.ts:4:58 - error TS2339: Property 'session' does not exist on type 'Ctx'.
+
+// 4 export default async function getCurrentUser(_ = null, { session }: Ctx) {
