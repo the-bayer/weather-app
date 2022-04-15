@@ -13,11 +13,13 @@ import { number, z } from "zod"
 // if authenticated
 interface AppProps {
   changeArea: Function
+  favoriteZipcode?: number
 }
 
-const SearchBar = ({ changeArea }: AppProps) => {
+const SearchBar = ({ changeArea, favoriteZipcode }: AppProps) => {
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
+  const [lastzip, setLastzip] = useState<number>()
 
   // if authenticated user
   // function dashboardLocation() {}
@@ -26,6 +28,15 @@ const SearchBar = ({ changeArea }: AppProps) => {
   useEffect(() => {
     changeArea(location, zipcode)
   }, [zipcode, location, changeArea])
+
+  useEffect(() => {
+    if (lastzip === favoriteZipcode) return
+    setZipcode(favoriteZipcode)
+  }, [favoriteZipcode, zipcode, lastzip])
+
+  useEffect(() => {
+    setLastzip(zipcode)
+  }, [zipcode])
 
   // callback to retrieve location name from weatherDisplay
   function changeLocation(name: string) {

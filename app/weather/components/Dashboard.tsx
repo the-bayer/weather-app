@@ -1,4 +1,4 @@
-import { useEffect, useState, MouseEvent, Suspense } from "react"
+import { useEffect, useState } from "react"
 import { useMutation, useQuery, useSession } from "blitz"
 import createArea from "../../areas/mutations/createArea"
 import deleteArea from "app/areas/mutations/deleteArea"
@@ -8,6 +8,7 @@ import getUserAreas from "app/areas/queries/getUserAreas"
 interface AppProps {
   location?: string
   zipcode?: number
+  setFavoriteZipcode: Function
 }
 
 interface Card {
@@ -24,11 +25,8 @@ const DashBoard = (props: AppProps) => {
   const [createAreaMutation] = useMutation(createArea)
   const [deleteAreaMutation] = useMutation(deleteArea)
   const [userId, setUserId] = useState<number>()
-  const [rerender, setRerender] = useState(false)
-  // I know this is bad ^, just trying to get it to work for now
   const session = useSession()
 
-  // how do I ensure that id will not be undefined
   const [userAreas] = useQuery(getUserAreas, { id: userId })
 
   // sets user ID
@@ -110,9 +108,9 @@ const DashBoard = (props: AppProps) => {
     console.log(userAreas)
   }
 
-  // useEffect(() => {
-  //   console.log(cards)
-  // }, [cards])
+  function handleFavorite(e: any) {
+    props.setFavoriteZipcode(Number(e.target.name))
+  }
 
   // need to format scrollbar
   return (
@@ -134,8 +132,11 @@ const DashBoard = (props: AppProps) => {
                       className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 m-2 w-44"
                       key={area.zipcode}
                     >
-                      <div className="text-center">Location: {area.location}</div>
-                      <div className="text-center">Zipcode: {area.zipcode}</div>
+                      <button name={String(area.zipcode)} onClick={handleFavorite}>
+                        Location: {area.location}
+                        <br />
+                        Zipcode: {area.zipcode}
+                      </button>
                       <button
                         onClick={removeCard}
                         name={String(area.zipcode)}
@@ -155,8 +156,11 @@ const DashBoard = (props: AppProps) => {
                       className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 m-2 w-44"
                       key={card.zipcode}
                     >
-                      <div className="text-center">Location: {card.location}</div>
-                      <div className="text-center">Zipcode: {card.zipcode}</div>
+                      <button name={card.zipcode} onClick={handleFavorite} className="text-center ">
+                        Location: {card.location}
+                        <br />
+                        Zipcode: {card.zipcode}
+                      </button>
                       <button onClick={removeCard} name={card.zipcode} className="text-center">
                         Remove Card
                       </button>
