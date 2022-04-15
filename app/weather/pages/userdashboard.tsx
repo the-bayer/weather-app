@@ -3,7 +3,6 @@ import { Suspense, useEffect, useState } from "react"
 import DashBoard from "../components/dashboard"
 import SearchBar from "../components/searchBar"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import getCurrentUserArea from "app/users/queries/getCurrentUserArea"
 
 const UserDashBoard: BlitzPage = () => {
   return (
