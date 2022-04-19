@@ -10,9 +10,12 @@ const UserInfo = () => {
 
   if (currentUser) {
     return (
-      <>
+      <div className="place-items-center">
         <div className="text-center m-2">You&apos;re already logged in.</div>
-      </>
+        <Link href={Routes.UserDashBoard()}>
+          <a>Your Dashboard</a>
+        </Link>
+      </div>
     )
   } else {
     return (
@@ -38,14 +41,14 @@ const Landing: BlitzPage = () => {
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
 
-  function changeArea(name: string, number: number) {
-    setLocation(name)
-    setZipcode(number)
+  function changeArea(location: string, zipcode: number) {
+    setLocation(location)
+    setZipcode(zipcode)
   }
 
   return (
     <div className="flex flex-col place-items-center justify-center align-center w-screen h-screen bg-slate-200">
-      <SearchBar changeArea={changeArea} />
+      <SearchBar changeArea={changeArea} zipcode={zipcode} location={location} />
       <div>
         <div>To create a default location & add favorites, sign up or log in.</div>
         <Suspense fallback="...">

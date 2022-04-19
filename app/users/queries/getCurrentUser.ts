@@ -7,7 +7,6 @@ export default async function getCurrentUser(_ = null, { session }: Ctx) {
 
   const user = await db.user.findFirst({
     where: { id: session.userId },
-    // This is bad, need to refactor
     select: { id: true, name: true, email: true, role: true, defaultzip: true },
   })
 

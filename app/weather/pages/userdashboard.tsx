@@ -1,8 +1,9 @@
-import { BlitzPage, useSession } from "blitz"
+import { BlitzPage, useQuery, useSession, Router, useRouter } from "blitz"
 import { Suspense, useEffect, useState } from "react"
 import DashBoard from "../components/dashboard"
 import SearchBar from "../components/searchBar"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import getUserAreas from "app/areas/queries/getUserAreas"
 
 const UserDashBoard: BlitzPage = () => {
   return (
@@ -13,18 +14,14 @@ const UserDashBoard: BlitzPage = () => {
 }
 
 const PageContent = () => {
+  const user = useCurrentUser()
+  const router = useRouter()
   // prop drilling alternative??
-  // top level state (all components should read from this state)
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
-  const session = useSession()
-  const user = useCurrentUser()
-  // store this info in public data?
 
-  useEffect(() => {
-    if (!user?.defaultzip) return
-    setZipcode(Number(user.defaultzip))
-  }, [user?.defaultzip])
+  const session = useSession()
+  const [userAreas] = useQuery(getUserAreas, session)
 
   // callback from searchbar to change state
   function changeArea(location: string, zipcode: number) {
@@ -32,16 +29,22 @@ const PageContent = () => {
     setZipcode(zipcode)
   }
 
-  function selectFavorite(zipcode: number) {
+  // sets location based on favorite card
+  function handleFavorite(zipcode: number) {
     setZipcode(zipcode)
   }
 
   return (
     <div className="flex flex-col place-items-center justify-center w-screen h-screen bg-slate-200">
-      <SearchBar changeArea={changeArea} favoriteZipcode={zipcode} />
+      <SearchBar
+        changeArea={changeArea}
+        favoriteZipcode={zipcode}
+        zipcode={zipcode}
+        location={location}
+      />
       {/* Why do I need a suspense component */}
       <Suspense fallback="Loading...">
-        <DashBoard zipcode={zipcode} location={location} setFavoriteZipcode={selectFavorite} />
+        <DashBoard zipcode={zipcode} location={location} handleFavorite={handleFavorite} />
       </Suspense>
     </div>
   )

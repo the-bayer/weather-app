@@ -1,6 +1,6 @@
 import Form, { FORM_ERROR } from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
-import { BlitzPage } from "blitz"
+import { BlitzPage, Link, Router, useRouter } from "blitz"
 import LocationDisplay from "./locationDisplay"
 import WeatherDisplay from "./weatherDisplay"
 import { zipcode } from "../validations"
@@ -14,33 +14,23 @@ import { number, z } from "zod"
 interface AppProps {
   changeArea: Function
   favoriteZipcode?: number
+  zipcode?: number
+  location?: string
 }
 
-const SearchBar = ({ changeArea, favoriteZipcode }: AppProps) => {
-  const [zipcode, setZipcode] = useState<number>()
-  const [location, setLocation] = useState<string>()
-  const [lastzip, setLastzip] = useState<number>()
+const SearchBar = (props: AppProps) => {
+  const router = useRouter()
+  // attempted to intialize to string here
+  const [fieldZip, SetFieldZip] = useState<string>()
 
-  // if authenticated user
-  // function dashboardLocation() {}
-
-  // callback to raise state values to userdashboard
+  // is there a better way to update search field?
   useEffect(() => {
-    changeArea(location, zipcode)
-  }, [zipcode, location, changeArea])
-
-  useEffect(() => {
-    if (lastzip === favoriteZipcode) return
-    setZipcode(favoriteZipcode)
-  }, [favoriteZipcode, zipcode, lastzip])
-
-  useEffect(() => {
-    setLastzip(zipcode)
-  }, [zipcode])
+    SetFieldZip(String(router.query.zipcode))
+  }, [router.query.zipcode])
 
   // callback to retrieve location name from weatherDisplay
-  function changeLocation(name: string) {
-    setLocation(name)
+  function changeLocation(location: string) {
+    props.changeArea(location, props.zipcode)
   }
 
   return (
@@ -48,7 +38,6 @@ const SearchBar = ({ changeArea, favoriteZipcode }: AppProps) => {
     <div className="flex flex-col bg-slate-300 w-3/4 justify-center items-center">
       <div className="border-4 border-slate-500 rounded w-3/4 flex justify-center shadow-sm shadow-black p-1 m-1">
         <Form
-          // schema={zipcode} ??
           submitText="Search"
           onSubmit={(values) => {
             // if (FORM_ERROR) {
@@ -56,8 +45,11 @@ const SearchBar = ({ changeArea, favoriteZipcode }: AppProps) => {
             //   console.log("Whoops")
             //   return
             // }
+            router.push({
+              query: { zipcode: fieldZip },
+            })
             const toNumber = Number(values.zipcode)
-            setZipcode(toNumber)
+            props.changeArea("", toNumber)
           }}
           className="flex m-2 p-2 border-slate-500 border-2 rounded-md shadow-slate-800 shadow-sm bg-slate-400"
         >
@@ -66,11 +58,18 @@ const SearchBar = ({ changeArea, favoriteZipcode }: AppProps) => {
             label=""
             placeholder="Enter your zipcode"
             className="m-3 border-black border-2"
+            value={fieldZip}
+            onChange={(e) => {
+              SetFieldZip(e.target.value)
+            }}
+            onClick={(e: any) => e.target.select()}
           />
         </Form>
       </div>
-      <LocationDisplay zipcode={zipcode} location={location} />
-      <WeatherDisplay zipcode={zipcode} changeLocation={changeLocation} />
+
+      <LocationDisplay location={props.location} />
+
+      <WeatherDisplay changeLocation={changeLocation} zipcode={props.zipcode} />
     </div>
   )
 }

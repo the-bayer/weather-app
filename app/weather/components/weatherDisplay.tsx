@@ -1,4 +1,4 @@
-import { BlitzPage, InferGetServerSidePropsType } from "blitz"
+import { useParam, useRouter } from "blitz"
 import { useEffect, useState } from "react"
 import { z } from "zod"
 import { weatherDataSchema } from "../validations"
@@ -19,49 +19,30 @@ let d2d = require("degrees-to-direction")
 
 export const WeatherDisplay = (props: AppProps) => {
   const [weatherData, setWeatherData] = useState<weatherDataType>()
-
-  // // used while API was blocked
-  // function getWeather() {
-  //     const data = {
-  //       coord: { lon: -0.13, lat: 51.51 },
-  //       weather: [
-  //         { id: 300, main: "Drizzle", description: "light intensity drizzle", icon: "09d" },
-  //       ],
-  //       base: "stations",
-  //       main: { temp: 280.32, pressure: 1012, humidity: 81, temp_min: 279.15, temp_max: 281.15 },
-  //       visibility: 10000,
-  //       wind: { speed: 4.1, deg: 80 },
-  //       clouds: { all: 90 },
-  //       dt: 1485789600,
-  //       sys: {
-  //         type: 1,
-  //         id: 5091,
-  //         message: 0.0103,
-  //         country: "GB",
-  //         sunrise: 1485762037,
-  //         sunset: 1485794875,
-  //       },
-  //       id: 2643743,
-  //       name: "London",
-  //       cod: 200,
-  //     }
-  //   setWeatherData(data);
-  // }
-
+  const router = useRouter()
   // make API call on server & blitz query
   // GOT instead of fetch - npm library to install (only works on server)
   // push to end of URL
 
-  // calls openweather API based on props.zipcode and sets weatherData state
+  // may not need to useEffect here?
+  // useEffect(() => {
+  //   if (!props.zipcode) return;
+
+  //   router.push({
+  //     pathname: "/userdashboard",
+  //     query: {zipcode: props.zipcode}
+  //   })
+  // }, [props.zipcode, router])
+
+  // calls openweather API based on zipcode query and sets weatherData state
   useEffect(() => {
     async function getWeather() {
-      if (!props.zipcode) return
-
       try {
         const endpoint: string =
           "https://api.openweathermap.org/data/2.5/weather?zip=" +
-          props.zipcode +
+          String(router.query.zipcode) +
           ",us&appid=5df99f8fca15b6e86983bb6236016583"
+
         const data = await fetch(endpoint).then((blob) => blob.json())
         setWeatherData(weatherDataSchema.parse(data))
       } catch (error: any) {
@@ -69,7 +50,7 @@ export const WeatherDisplay = (props: AppProps) => {
       }
     }
     getWeather()
-  }, [props.zipcode])
+  }, [router.query.zipcode])
 
   // raises location name from API reponse to search bar
   useEffect(() => {
@@ -90,6 +71,7 @@ export const WeatherDisplay = (props: AppProps) => {
 
   return (
     // set first row of grid in cards as fixed height
+    // weatherData is possibly undefined??
     <>
       <div className="shadow-sm shadow-black p-1 m-1 border-4 border-slate-600 border-solid rounded-lg bg-slate-300 w-3/4 h-96 grid grid-cols-3 gap-x-4 p-5">
         {weatherData ? (

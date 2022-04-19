@@ -1,32 +1,42 @@
-import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import { NotFoundError, resolver, Ctx } from "blitz"
+import { NotFoundError, resolver, useQuery, useSession } from "blitz"
 import db from "db"
-import { any, z } from "zod"
+import { z } from "zod"
 
 const CreateArea = z.object({
   zipcode: z.number(),
   location: z.string(),
-  id: z.number(),
 })
 
-// may need to add validation here?
-// not sure how to get user on the server, had issues with context
 export default resolver.pipe(
   resolver.zod(CreateArea),
   resolver.authorize(),
-  async ({ location, zipcode, id }) => {
-    const user = await db.user.findFirst({ where: { id: id } })
-    if (!user) return
-    // correct?
-
-    const area = await db.area.create({
-      data: {
-        zipcode: zipcode,
-        location: location,
-        userId: user.id,
+  async ({ location, zipcode }, { session }) => {
+    let exists = false
+    const userAreas = await db.area.findMany({
+      where: {
+        userId: session.userId,
       },
     })
 
-    return area
+    if (userAreas) {
+      for (let area of userAreas) {
+        if (zipcode === area.zipcode) {
+          // throw error
+          console.log("Favorite already exists")
+          exists = true
+        }
+      }
+    }
+
+    if (!exists) {
+      const area = await db.area.create({
+        data: {
+          zipcode: zipcode,
+          location: location,
+          userId: session.userId,
+        },
+      })
+      return area
+    }
   }
 )
