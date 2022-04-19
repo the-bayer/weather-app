@@ -1,24 +1,17 @@
-import { useEffect, useState } from "react"
 import { useMutation, useQuery, useSession } from "blitz"
 import createArea from "../../areas/mutations/createArea"
-import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import getUserAreas from "app/areas/queries/getUserAreas"
 import FavoriteCard from "./favoriteCard"
 
 interface AppProps {
   location?: string
   zipcode?: number
-  handleFavorite: Function
 }
 
-const DashBoard = ({ location, zipcode, handleFavorite }: AppProps) => {
+const DashBoard = ({ location, zipcode }: AppProps) => {
   const session = useSession()
   const [createAreaMutation] = useMutation(createArea)
   const [userAreas, { refetch }] = useQuery(getUserAreas, session)
-
-  function handleFavoriteCard(zipcode: number) {
-    handleFavorite(zipcode)
-  }
 
   // need to format scrollbar
   return (
@@ -48,7 +41,6 @@ const DashBoard = ({ location, zipcode, handleFavorite }: AppProps) => {
                       location={area.location}
                       key={area.zipcode}
                       refetch={refetch}
-                      handleFavoriteCard={handleFavoriteCard}
                     />
                   )
                 })
@@ -60,5 +52,4 @@ const DashBoard = ({ location, zipcode, handleFavorite }: AppProps) => {
   )
 }
 
-DashBoard.authenticate = true
 export default DashBoard

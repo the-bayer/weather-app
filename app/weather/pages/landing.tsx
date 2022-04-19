@@ -1,12 +1,11 @@
 import { BlitzPage, Link, Routes, useMutation } from "blitz"
 import SearchBar from "../components/searchBar"
-import { useState, useEffect, Suspense } from "react"
+import { useState, Suspense } from "react"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
 import logout from "app/auth/mutations/logout"
 
 const UserInfo = () => {
   const currentUser = useCurrentUser()
-  const [logoutMutation] = useMutation(logout)
 
   if (currentUser) {
     return (
@@ -35,9 +34,8 @@ const UserInfo = () => {
   }
 }
 
-// may need to refactor props for searchbar
 const Landing: BlitzPage = () => {
-  // top level state
+  // top level state for all components
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
 

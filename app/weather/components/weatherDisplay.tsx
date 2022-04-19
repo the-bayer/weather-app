@@ -1,10 +1,9 @@
-import { useParam, useRouter } from "blitz"
+import { useRouter } from "blitz"
 import { useEffect, useState } from "react"
 import { z } from "zod"
 import { weatherDataSchema } from "../validations"
 import { Image } from "blitz"
 
-// capitalize types and schema, move to validations file
 // object possible undefined after changing schema from tuple to array
 // ternary operator should safeguard against this?? idk
 type weatherDataType = z.infer<typeof weatherDataSchema>
@@ -20,19 +19,7 @@ let d2d = require("degrees-to-direction")
 export const WeatherDisplay = (props: AppProps) => {
   const [weatherData, setWeatherData] = useState<weatherDataType>()
   const router = useRouter()
-  // make API call on server & blitz query
-  // GOT instead of fetch - npm library to install (only works on server)
-  // push to end of URL
-
-  // may not need to useEffect here?
-  // useEffect(() => {
-  //   if (!props.zipcode) return;
-
-  //   router.push({
-  //     pathname: "/userdashboard",
-  //     query: {zipcode: props.zipcode}
-  //   })
-  // }, [props.zipcode, router])
+  // make API call on server
 
   // calls openweather API based on zipcode query and sets weatherData state
   useEffect(() => {
@@ -58,21 +45,13 @@ export const WeatherDisplay = (props: AppProps) => {
     props.changeLocation(weatherData.name)
   }, [weatherData, props])
 
-  // // for troubleshooting while building
-  // function handleClick() {
-  //   if (!weatherData) return
-  //   console.log(weatherData.main)
-  //   console.log(weatherData)
-  // }
-
   const iconLoader = ({ src }: { src: string }) => {
     return `http://openweathermap.org/img/wn/${src}@2x.png`
   }
 
   return (
     // set first row of grid in cards as fixed height
-    // weatherData is possibly undefined??
-    <>
+    <div>
       <div className="shadow-sm shadow-black p-1 m-1 border-4 border-slate-600 border-solid rounded-lg bg-slate-300 w-3/4 h-96 grid grid-cols-3 gap-x-4 p-5">
         {weatherData ? (
           <>
@@ -157,8 +136,7 @@ export const WeatherDisplay = (props: AppProps) => {
           </>
         )}
       </div>
-      {/* <button onClick={handleClick}>Forecast</button> */}
-    </>
+    </div>
   )
 }
 

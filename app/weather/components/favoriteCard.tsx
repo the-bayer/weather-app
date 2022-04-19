@@ -5,10 +5,9 @@ interface AppProps {
   zipcode?: number
   location?: string
   refetch: Function
-  handleFavoriteCard: Function
 }
 
-const FavoriteCard = ({ zipcode, location, refetch, handleFavoriteCard }: AppProps) => {
+const FavoriteCard = ({ zipcode, location, refetch }: AppProps) => {
   const [deleteAreaMutation] = useMutation(deleteArea)
   const session = useSession()
 
@@ -21,15 +20,12 @@ const FavoriteCard = ({ zipcode, location, refetch, handleFavoriteCard }: AppPro
     refetch()
   }
 
-  // onClick = {() => {
-  //       handleFavoriteCard(zipcode)
-  //     }}
-
   return (
     <li
       id="location-card"
       className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 m-2 w-44"
     >
+      {/* Correct use of routes here? Should I use router.push? */}
       <Link href={Routes.UserDashBoard({ zipcode: zipcode })}>
         <a>
           Location: {location}

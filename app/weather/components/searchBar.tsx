@@ -1,16 +1,10 @@
-import Form, { FORM_ERROR } from "app/core/components/Form"
+import Form from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
-import { BlitzPage, Link, Router, useRouter } from "blitz"
+import { useRouter } from "blitz"
 import LocationDisplay from "./locationDisplay"
 import WeatherDisplay from "./weatherDisplay"
-import { zipcode } from "../validations"
 import { useState, useEffect } from "react"
-import { number, z } from "zod"
 
-// store zipcode in url
-// query Router.push
-
-// if authenticated
 interface AppProps {
   changeArea: Function
   favoriteZipcode?: number
@@ -20,7 +14,7 @@ interface AppProps {
 
 const SearchBar = (props: AppProps) => {
   const router = useRouter()
-  // attempted to intialize to string here
+  // attempted to intialize to string here for search field
   const [fieldZip, SetFieldZip] = useState<string>()
 
   // is there a better way to update search field?
@@ -62,6 +56,7 @@ const SearchBar = (props: AppProps) => {
             onChange={(e) => {
               SetFieldZip(e.target.value)
             }}
+            // add TS for events here
             onClick={(e: any) => e.target.select()}
           />
         </Form>

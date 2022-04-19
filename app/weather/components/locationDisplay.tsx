@@ -9,7 +9,6 @@ const LocationDisplay = (props: AppProps) => {
       <div className="bg-slate-400 border-2 border-slate-700 rounded-lg p-3 w-1/3 text-center shadow-sm shadow-black">
         {props.location}
       </div>
-      {/* <div>{props.zipcode}</div> */}
     </div>
   )
 }
