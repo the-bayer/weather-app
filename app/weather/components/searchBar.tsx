@@ -18,9 +18,9 @@ const SearchBar = (props: AppProps) => {
   const [fieldZip, SetFieldZip] = useState<string>()
 
   // is there a better way to update search field?
-  useEffect(() => {
-    SetFieldZip(String(router.query.zipcode))
-  }, [router.query.zipcode])
+  // useEffect(() => {
+  //   SetFieldZip(String(router.query.zipcode))
+  // }, [router.query.zipcode])
 
   // callback to retrieve location name from weatherDisplay
   function changeLocation(location: string) {
@@ -40,7 +40,7 @@ const SearchBar = (props: AppProps) => {
             //   return
             // }
             router.push({
-              query: { zipcode: fieldZip },
+              query: { zipcode: values.zipcode },
             })
             const toNumber = Number(values.zipcode)
             props.changeArea("", toNumber)
@@ -52,10 +52,10 @@ const SearchBar = (props: AppProps) => {
             label=""
             placeholder="Enter your zipcode"
             className="m-3 border-black border-2"
-            value={fieldZip}
-            onChange={(e) => {
-              SetFieldZip(e.target.value)
-            }}
+            // value={fieldZip}
+            // onChange={(e) => {
+            //   SetFieldZip(e.target.value)
+            // }}
             // add TS for events here
             onClick={(e: any) => e.target.select()}
           />
