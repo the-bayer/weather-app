@@ -23,11 +23,11 @@ const FavoriteCard = ({ zipcode, location, refetch }: AppProps) => {
   return (
     <li
       id="location-card"
-      className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 m-2 w-44"
+      className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 m-2 min-w-fit"
     >
       {/* Correct use of routes here? Should I use router.push? */}
       <Link href={Routes.UserDashBoard({ zipcode: zipcode })}>
-        <a>
+        <a className="text-center">
           Location: {location}
           <br />
           Zipcode: {zipcode}

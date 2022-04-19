@@ -9,26 +9,32 @@ const UserInfo = () => {
 
   if (currentUser) {
     return (
-      <div className="place-items-center">
-        <div className="text-center m-2">You&apos;re already logged in.</div>
+      <div className="flex flex-col place-items-center">
+        <div className="text-center m-2">You&apos;re logged in.</div>
         <Link href={Routes.UserDashBoard()}>
-          <a>Your Dashboard</a>
+          <a className="border-black border-2 p-2 rounded-xl bg-slate-400 hover:bg-slate-600">
+            Navigate to your dashboard.
+          </a>
         </Link>
       </div>
     )
   } else {
     return (
       <>
-        <Link href={Routes.SignupPage()}>
-          <a className="button small border-black border-2">
-            <strong>Sign Up</strong>
-          </a>
-        </Link>
-        <Link href={Routes.LoginPage()}>
-          <a className="button small border-black border-2">
-            <strong>Login</strong>
-          </a>
-        </Link>
+        <div className="">
+          To create a default location & add favorites,{" "}
+          <Link href={Routes.SignupPage()}>
+            <a className="underline hover:no-underline">
+              <strong>sign up</strong>
+            </a>
+          </Link>{" "}
+          or{" "}
+          <Link href={Routes.LoginPage()}>
+            <a className="underline hover:no-underline">
+              <strong>log in.</strong>
+            </a>
+          </Link>
+        </div>
       </>
     )
   }
@@ -45,13 +51,17 @@ const Landing: BlitzPage = () => {
   }
 
   return (
-    <div className="flex flex-col place-items-center justify-center align-center w-screen h-screen bg-slate-200">
+    <div className="flex flex-col place-items-center justify-center h-screen w-full overflow-auto">
       <SearchBar changeArea={changeArea} zipcode={zipcode} location={location} />
       <div>
-        <div>To create a default location & add favorites, sign up or log in.</div>
         <Suspense fallback="...">
           <UserInfo />
         </Suspense>
+        <div className="flex flex-col place-items-center">
+          <Link href={Routes.Home()}>
+            <a className="underline hover:no-underline font-bold m-4">Back to the Home Page</a>
+          </Link>
+        </div>
       </div>
     </div>
   )

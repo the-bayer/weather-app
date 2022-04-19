@@ -51,91 +51,89 @@ export const WeatherDisplay = (props: AppProps) => {
 
   return (
     // set first row of grid in cards as fixed height
-    <div>
-      <div className="shadow-sm shadow-black p-1 m-1 border-4 border-slate-600 border-solid rounded-lg bg-slate-300 w-3/4 h-96 grid grid-cols-3 gap-x-4 p-5">
-        {weatherData ? (
-          <>
-            <div
-              id="weather-card"
-              className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-5 bg-slate-400"
-            >
-              <div className="text-xl font-bold underline">Weather</div>
-              <div>
-                <div>Current Conditions:</div>
-                <div className="text-center">{weatherData.weather[0].main}</div>
-              </div>
-              <div>
-                <div>Condition Details:</div>
-                <div className="text-center capitalize">{weatherData.weather[0].description}</div>
-              </div>
-              {/* set Image unoptimized property*/}
-              <Image
-                loader={iconLoader}
-                src={weatherData.weather[0].icon}
-                alt="icon displaying current weather"
-                width={60}
-                height={60}
-              />
+    <div className="shadow-sm shadow-black p-1 m-1 border-4 border-slate-600 border-solid rounded-lg bg-slate-300 w-full w-min-content md:h-full md:grid md:grid-cols-3 md:gap-x-4 p-5 flex flex-col h-max-content">
+      {weatherData ? (
+        <>
+          <div
+            id="weather-card"
+            className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-5 bg-slate-400 mb-4 md:mb-0"
+          >
+            <div className="text-xl font-bold underline">Weather</div>
+            <div>
+              <div>Current Conditions:</div>
+              <div className="text-center">{weatherData.weather[0].main}</div>
             </div>
-            <div
-              id="temperature-card"
-              className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center p-5 bg-slate-400"
-            >
-              <div className="text-xl font-bold underline">Temperature</div>
-              <div>
-                <div>Current Temperature:</div>
-                <div className="text-center">{convertTemp(weatherData.main.temp)}° F</div>
-              </div>
-              <div>
-                <div>Temperature High:</div>
-                <div className="text-center">{convertTemp(weatherData.main.temp_max)}° F</div>
-              </div>
-              <div>
-                <div>Temperature Low:</div>{" "}
-                <div className="text-center">{convertTemp(weatherData.main.temp_min)}° F</div>
-              </div>
+            <div>
+              <div>Condition Details:</div>
+              <div className="text-center capitalize">{weatherData.weather[0].description}</div>
             </div>
-            <div
-              id="time-wind-card"
-              className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center p-5 bg-slate-400"
-            >
-              <div className="text-xl font-bold underline text-center">Sunrise/Sunset & Wind</div>
-              <div>
-                <div className="text-center">Today&apos;s Sunrise at:</div>
-                <div className="text-center">{convertDate(weatherData.sys.sunrise)}</div>
-              </div>
-              <div>
-                <div className="text-center">Today&apos;s Sunset at:</div>
-                <div className="text-center">{convertDate(weatherData.sys.sunset)}</div>
-              </div>
+            {/* set Image unoptimized property*/}
+            <Image
+              loader={iconLoader}
+              src={weatherData.weather[0].icon}
+              alt="icon displaying current weather"
+              width={60}
+              height={60}
+            />
+          </div>
+          <div
+            id="temperature-card"
+            className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center p-5 bg-slate-400 mb-4 md:mb-0"
+          >
+            <div className="text-xl font-bold underline">Temperature</div>
+            <div>
+              <div>Current Temperature:</div>
+              <div className="text-center">{convertTemp(weatherData.main.temp)}° F</div>
+            </div>
+            <div>
+              <div>Temperature High:</div>
+              <div className="text-center">{convertTemp(weatherData.main.temp_max)}° F</div>
+            </div>
+            <div>
+              <div>Temperature Low:</div>{" "}
+              <div className="text-center">{convertTemp(weatherData.main.temp_min)}° F</div>
+            </div>
+          </div>
+          <div
+            id="time-wind-card"
+            className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center p-5 bg-slate-400 "
+          >
+            <div className="text-xl font-bold underline text-center">Sunrise/Sunset & Wind</div>
+            <div>
+              <div className="text-center">Today&apos;s Sunrise at:</div>
+              <div className="text-center">{convertDate(weatherData.sys.sunrise)}</div>
+            </div>
+            <div>
+              <div className="text-center">Today&apos;s Sunset at:</div>
+              <div className="text-center">{convertDate(weatherData.sys.sunset)}</div>
+            </div>
+            <div className="text-center">
+              <div>Wind:</div>
               <div className="text-center">
-                <div>Wind:</div>
-                <div className="text-center">
-                  {convertMPS(weatherData.wind.speed)} MPH from the {d2d(weatherData.wind.deg)}
-                </div>
+                {convertMPS(weatherData.wind.speed)} MPH from the {d2d(weatherData.wind.deg)}
               </div>
             </div>
-          </>
-        ) : (
-          // ternary operator loading screen
-          <>
-            <div
-              id="weather-card"
-              className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center"
-            ></div>
-            <div
-              id="temperature-card"
-              className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center"
-            >
-              <div>Loading...</div>
-            </div>
-            <div
-              id="time-wind-card"
-              className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center"
-            ></div>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      ) : (
+        // ternary operator loading screen
+        <>
+          <div
+            id="weather-card"
+            className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center h-28 mb-2"
+          ></div>
+          <div
+            id="temperature-card"
+            className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center h-28 mb-2"
+          >
+            <div>Loading...</div>
+          </div>
+          <div
+            id="time-wind-card"
+            className="border-2 border-slate-700 shadow-md shadow-slate-700 rounded-xl grid place-items-center h-28"
+          ></div>
+        </>
+      )}
     </div>
   )
 }

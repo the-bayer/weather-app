@@ -1,4 +1,15 @@
-import { BlitzPage, useQuery, useSession, Router, useRouter } from "blitz"
+import logout from "app/auth/mutations/logout"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import {
+  BlitzPage,
+  useQuery,
+  useSession,
+  Router,
+  useRouter,
+  useMutation,
+  Routes,
+  Link,
+} from "blitz"
 import { Suspense, useState } from "react"
 import DashBoard from "../components/dashboard"
 import SearchBar from "../components/searchBar"
@@ -15,6 +26,9 @@ const UserDashBoard: BlitzPage = () => {
 const PageContent = () => {
   // prop drilling alternative?
   // top level state for all components
+  // still need to initalize to default zip
+  const [logoutMutation] = useMutation(logout)
+  const user = useCurrentUser()
   const [zipcode, setZipcode] = useState<number>()
   const [location, setLocation] = useState<string>()
 
@@ -27,9 +41,20 @@ const PageContent = () => {
   }
 
   return (
-    <div className="flex flex-col place-items-center justify-center w-screen h-screen bg-slate-200">
+    <div className="sm:flex sm:flex-col place-items-center justify-center h-screen overflow-auto inline-block w-full overflow-auto">
       <SearchBar changeArea={changeArea} zipcode={zipcode} location={location} />
       <DashBoard zipcode={zipcode} location={location} />
+      <button
+        className="underline hover:no-underline font-bold"
+        onClick={async () => {
+          await logoutMutation()
+        }}
+      >
+        Logout
+      </button>
+      <Link href={Routes.Home()}>
+        <a className="underline hover:no-underline font-bold">Back to the Home Page</a>
+      </Link>
     </div>
   )
 }

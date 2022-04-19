@@ -29,8 +29,8 @@ const SearchBar = (props: AppProps) => {
 
   return (
     // set max fit for content
-    <div className="flex flex-col bg-slate-300 w-3/4 justify-center items-center">
-      <div className="border-4 border-slate-500 rounded w-3/4 flex justify-center shadow-sm shadow-black p-1 m-1">
+    <div className="flex flex-col bg-slate-200 w-11/12 mx-2 lg:m-0 lg:w-3/4 place-items-center bg-slate-300 border-8 p-8 border-slate-600 rounded-xl md:mt-0 mt-2 overflow-auto">
+      <div className="border-4 border-slate-500 rounded lg:w-3/4 w-full flex justify-center shadow-sm shadow-black p-1 m-1">
         <Form
           submitText="Search"
           onSubmit={(values) => {
@@ -61,10 +61,12 @@ const SearchBar = (props: AppProps) => {
           />
         </Form>
       </div>
-
-      <LocationDisplay location={props.location} />
-
-      <WeatherDisplay changeLocation={changeLocation} zipcode={props.zipcode} />
+      <div className="flex flex-col place-items-center justify-content-center content-center lg:w-3/4 w-full">
+        {/* <div className="flex flex-col bg-black items-center justify-items-center"> */}
+        <LocationDisplay location={props.location} />
+        {/* </div> */}
+        <WeatherDisplay changeLocation={changeLocation} zipcode={props.zipcode} />
+      </div>
     </div>
   )
 }
