@@ -41,3 +41,5 @@ export const ChangePassword = z.object({
   currentPassword: z.string(),
   newPassword: password,
 })
+
+export const ChangeZip = z.string()

@@ -4,6 +4,7 @@ import { BlitzPage, Router, useMutation, Routes, Link } from "blitz"
 import { Suspense, useMemo, useState } from "react"
 import DashBoard from "../components/dashboard"
 import SearchBar from "../components/searchBar"
+import ChangeDefaultZip from "../components/changeDefaultZip"
 
 const UserDashBoard: BlitzPage = () => {
   // why do I need a suspense component?
@@ -38,6 +39,7 @@ const PageContent = () => {
     <div className="sm:flex sm:flex-col place-items-center justify-center h-screen overflow-auto inline-block w-full overflow-auto">
       <SearchBar changeArea={changeArea} zipcode={zipcode} location={location} />
       <DashBoard zipcode={zipcode} location={location} />
+      <ChangeDefaultZip />
       <button
         className="underline hover:no-underline font-bold"
         onClick={async () => {

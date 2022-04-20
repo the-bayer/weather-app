@@ -17,7 +17,7 @@ const DashBoard = ({ location, zipcode }: AppProps) => {
   return (
     <div className="bg-slate-500 lg:w-3/4 w-11/12 h-1/8 flex items-center justify-center border-4 border-slate-400 rounded shadow-sm shadow-black m-1 box-border ">
       <button
-        className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 place-self-start m-2 self-center"
+        className="border-2 border-slate-700 rounded-xl shadow-md shadow-slate-700 grid place-items-center p-2 bg-slate-400 place-self-start m-2 self-center hover:bg-slate-600 hover:text-white"
         onClick={async () => {
           try {
             if (!zipcode || !location) return

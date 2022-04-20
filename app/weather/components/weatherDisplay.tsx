@@ -24,6 +24,7 @@ export const WeatherDisplay = (props: AppProps) => {
   // calls openweather API based on zipcode query and sets weatherData state
   useEffect(() => {
     async function getWeather() {
+      if (!router.query.zipcode) return
       try {
         const endpoint: string =
           "https://api.openweathermap.org/data/2.5/weather?zip=" +

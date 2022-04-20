@@ -39,7 +39,7 @@ const UserInfo = () => {
   }
 }
 
-const Landing: BlitzPage = () => {
+const PageContent: BlitzPage = () => {
   // top level state for all components
   const [zipcode, setZipcode] = useState<string>()
   const [location, setLocation] = useState<string>()
@@ -53,9 +53,7 @@ const Landing: BlitzPage = () => {
     <div className="flex flex-col place-items-center justify-center h-screen w-full overflow-auto">
       <SearchBar changeArea={changeArea} zipcode={zipcode} location={location} />
       <div>
-        <Suspense fallback="...">
-          <UserInfo />
-        </Suspense>
+        <UserInfo />
         <div className="flex flex-col place-items-center">
           <Link href={Routes.Home()}>
             <a className="underline hover:no-underline font-bold m-4">Back to the Home Page</a>
@@ -63,6 +61,14 @@ const Landing: BlitzPage = () => {
         </div>
       </div>
     </div>
+  )
+}
+
+const Landing: BlitzPage = () => {
+  return (
+    <Suspense fallback="...">
+      <PageContent />
+    </Suspense>
   )
 }
 
