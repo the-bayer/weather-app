@@ -24,7 +24,7 @@ const SearchBar = (props: AppProps) => {
 
   // callback to retrieve location name from weatherDisplay
   function changeLocation(location: string) {
-    props.changeArea(location, props.zipcode)
+    props.changeArea(location, router.query.zipcode)
   }
 
   return (

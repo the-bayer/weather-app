@@ -2,7 +2,6 @@ import Form from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
 import changeZip from "app/auth/mutations/changeZip"
 import { useMutation } from "blitz"
-import { useMemo } from "react"
 
 const ChangeDefaultZip = () => {
   const [changeZipMutation] = useMutation(changeZip)

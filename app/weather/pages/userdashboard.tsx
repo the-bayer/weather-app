@@ -1,6 +1,6 @@
 import logout from "app/auth/mutations/logout"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import { BlitzPage, Router, useMutation, Routes, Link } from "blitz"
+import { BlitzPage, Router, useMutation, Routes, Link, useRouter } from "blitz"
 import { Suspense, useMemo, useState } from "react"
 import DashBoard from "../components/dashboard"
 import SearchBar from "../components/searchBar"
@@ -23,6 +23,7 @@ const PageContent = () => {
   const user = useCurrentUser()
   const [zipcode, setZipcode] = useState<string>()
   const [location, setLocation] = useState<string>()
+  const router = useRouter()
 
   // intializes page to default zipcode, occurs on refresh
   useMemo(() => {

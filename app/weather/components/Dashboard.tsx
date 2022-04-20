@@ -1,4 +1,4 @@
-import { useMutation, useQuery, useSession } from "blitz"
+import { useMutation, useQuery, useRouter, useSession } from "blitz"
 import createArea from "../../areas/mutations/createArea"
 import getUserAreas from "app/areas/queries/getUserAreas"
 import FavoriteCard from "./favoriteCard"
@@ -12,6 +12,7 @@ const DashBoard = ({ location, zipcode }: AppProps) => {
   const session = useSession()
   const [createAreaMutation] = useMutation(createArea)
   const [userAreas, { refetch }] = useQuery(getUserAreas, session)
+  const router = useRouter()
 
   // need to format scrollbar
   return (
