@@ -1,31 +1,60 @@
-import { BlitzPage } from "blitz"
-import { useEffect, useState } from "react"
+import logout from "app/auth/mutations/logout"
+import { useCurrentUser } from "app/core/hooks/useCurrentUser"
+import { BlitzPage, Router, useMutation, Routes, Link, useRouter } from "blitz"
+import { Suspense, useMemo, useState } from "react"
 import DashBoard from "../components/dashboard"
 import SearchBar from "../components/searchBar"
+import ChangeDefaultZip from "../components/changeDefaultZip"
 
 const UserDashBoard: BlitzPage = () => {
-  // prop drilling alternative??
-  // top level state (all components should read from this state)
-  const [zipcode, setZipcode] = useState<number>()
+  // why do I need a suspense component?
+  return (
+    <Suspense fallback="loading...">
+      <PageContent />
+    </Suspense>
+  )
+}
+
+const PageContent = () => {
+  // prop drilling alternative?
+  // top level state for all components
+  // still need to initalize to default zip
+  const [logoutMutation] = useMutation(logout)
+  const user = useCurrentUser()
+  const [zipcode, setZipcode] = useState<string>()
   const [location, setLocation] = useState<string>()
+  const router = useRouter()
+
+  // intializes page to default zipcode, occurs on refresh
+  useMemo(() => {
+    Router.push({ query: { zipcode: user?.defaultzip } })
+  }, [user?.defaultzip])
 
   // callback from searchbar to change state
-  function changeArea(name: string, number: number) {
-    setLocation(name)
-    setZipcode(number)
+  function changeArea(location: string, zipcode: string) {
+    setLocation(location)
+    setZipcode(zipcode)
   }
 
   return (
-    <div className="flex flex-col place-items-center justify-center w-screen h-screen bg-slate-200">
-      <SearchBar changeArea={changeArea} />
+    <div className="sm:flex sm:flex-col place-items-center justify-center h-screen overflow-auto inline-block w-full overflow-auto">
+      <SearchBar changeArea={changeArea} zipcode={zipcode} location={location} />
       <DashBoard zipcode={zipcode} location={location} />
+      <ChangeDefaultZip />
+      <button
+        className="underline hover:no-underline font-bold"
+        onClick={async () => {
+          await logoutMutation()
+        }}
+      >
+        Logout
+      </button>
+      <Link href={Routes.Home()}>
+        <a className="underline hover:no-underline font-bold">Back to the Home Page</a>
+      </Link>
     </div>
   )
 }
 
-// page has zipcode & location state, changed by searchbar component
-// Passed to Dashboard
-// user clicks add to fav - triggers new card creation & database update
-// user clicks remove - triggers card deletion & database update
-
+UserDashBoard.authenticate = true
 export default UserDashBoard

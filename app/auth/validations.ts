@@ -14,6 +14,7 @@ export const password = z
 export const Signup = z.object({
   email,
   password,
+  defaultzip: z.string(),
 })
 
 export const Login = z.object({
@@ -40,3 +41,5 @@ export const ChangePassword = z.object({
   currentPassword: z.string(),
   newPassword: password,
 })
+
+export const ChangeZip = z.string()

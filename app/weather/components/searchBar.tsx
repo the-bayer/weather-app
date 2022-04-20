@@ -1,52 +1,42 @@
-import Form, { FORM_ERROR } from "app/core/components/Form"
+import Form from "app/core/components/Form"
 import LabeledTextField from "app/core/components/LabeledTextField"
-import { BlitzPage } from "blitz"
+import { useRouter, useSession } from "blitz"
 import LocationDisplay from "./locationDisplay"
 import WeatherDisplay from "./weatherDisplay"
-import { zipcode } from "../validations"
-import { useState, useEffect } from "react"
-import { number, z } from "zod"
+import React, { useMemo, useState } from "react"
 
-// store zipcode in url
-// query Router.push
-
-// if authenticated
 interface AppProps {
   changeArea: Function
+  zipcode?: string
+  location?: string
 }
 
-const SearchBar = ({ changeArea }: AppProps) => {
-  const [zipcode, setZipcode] = useState<number>()
-  const [location, setLocation] = useState<string>()
+const SearchBar = (props: AppProps) => {
+  const router = useRouter()
+  // state to allow search bar to display current zipcode
+  const [fieldZip, SetFieldZip] = useState<string>()
+  const session = useSession()
 
-  // if authenticated user
-  // function dashboardLocation() {}
-
-  // callback to raise state values to userdashboard
-  useEffect(() => {
-    changeArea(location, zipcode)
-  }, [zipcode, location, changeArea])
+  useMemo(() => {
+    if (!router.query.zipcode) return
+    SetFieldZip(String(router.query.zipcode))
+  }, [router.query.zipcode])
 
   // callback to retrieve location name from weatherDisplay
-  function changeLocation(name: string) {
-    setLocation(name)
+  function changeLocation(location: string) {
+    props.changeArea(location, router.query.zipcode)
   }
 
   return (
-    // set max fit for content
-    <div className="flex flex-col bg-slate-300 w-3/4 justify-center items-center">
-      <div className="border-4 border-slate-500 rounded w-3/4 flex justify-center shadow-sm shadow-black p-1 m-1">
+    <div className="flex flex-col bg-slate-200 w-11/12 mx-2 lg:m-0 lg:w-3/4 place-items-center bg-slate-300 border-8 p-8 border-slate-600 rounded-xl md:mt-0 mt-2 overflow-auto">
+      <div className="border-4 border-slate-500 rounded lg:w-3/4 w-full flex justify-center shadow-sm shadow-black p-1 m-1">
         <Form
-          // schema={zipcode} ??
-          submitText="Search"
           onSubmit={(values) => {
-            // if (FORM_ERROR) {
-            //   // Add error message
-            //   console.log("Whoops")
-            //   return
-            // }
-            const toNumber = Number(values.zipcode)
-            setZipcode(toNumber)
+            router.push({
+              query: { zipcode: fieldZip },
+            })
+
+            props.changeArea("", values.zipcode)
           }}
           className="flex m-2 p-2 border-slate-500 border-2 rounded-md shadow-slate-800 shadow-sm bg-slate-400"
         >
@@ -55,11 +45,24 @@ const SearchBar = ({ changeArea }: AppProps) => {
             label=""
             placeholder="Enter your zipcode"
             className="m-3 border-black border-2"
+            value={fieldZip}
+            onChange={(e) => {
+              SetFieldZip(e.target.value)
+            }}
+            onClick={(e: any) => e.target.select()}
           />
+          <button
+            type="submit"
+            className=" border-slate-700 border-2 shadow rounded-md p-2 hover:bg-slate-600 hover:text-white"
+          >
+            Search
+          </button>
         </Form>
       </div>
-      <LocationDisplay zipcode={zipcode} location={location} />
-      <WeatherDisplay zipcode={zipcode} changeLocation={changeLocation} />
+      <div className="flex flex-col place-items-center justify-content-center content-center lg:w-3/4 w-full">
+        <LocationDisplay location={props.location} />
+        <WeatherDisplay changeLocation={changeLocation} zipcode={props.zipcode} />
+      </div>
     </div>
   )
 }
