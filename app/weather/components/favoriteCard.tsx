@@ -1,21 +1,24 @@
 import deleteArea from "app/areas/mutations/deleteArea"
-import { Link, Routes, useMutation, useSession } from "blitz"
+import { Link, Routes, useMutation } from "blitz"
+import React from "react"
 
 interface AppProps {
-  zipcode?: number
+  zipcode?: string
   location?: string
   refetch: Function
 }
 
+// interface CardEventTarget extends React.MouseEvent<HTMLButtonElement> {
+
+// }
+
 const FavoriteCard = ({ zipcode, location, refetch }: AppProps) => {
   const [deleteAreaMutation] = useMutation(deleteArea)
-  const session = useSession()
 
   // Edit TS - mouseevent does not work
   async function removeCard(e: any) {
-    if (!session) return
-    const badZip = Number(e.target.name)
-    if (!badZip || !session.userId) return
+    const badZip = e.target.name
+    if (!badZip) return
     await deleteAreaMutation({ badZip })
     refetch()
   }

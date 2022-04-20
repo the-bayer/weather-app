@@ -2,7 +2,6 @@ import { BlitzPage, Link, Routes, useMutation } from "blitz"
 import SearchBar from "../components/searchBar"
 import { useState, Suspense } from "react"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import logout from "app/auth/mutations/logout"
 
 const UserInfo = () => {
   const currentUser = useCurrentUser()
@@ -42,10 +41,10 @@ const UserInfo = () => {
 
 const Landing: BlitzPage = () => {
   // top level state for all components
-  const [zipcode, setZipcode] = useState<number>()
+  const [zipcode, setZipcode] = useState<string>()
   const [location, setLocation] = useState<string>()
 
-  function changeArea(location: string, zipcode: number) {
+  function changeArea(location: string, zipcode: string) {
     setLocation(location)
     setZipcode(zipcode)
   }

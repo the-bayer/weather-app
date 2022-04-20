@@ -9,7 +9,7 @@ import { Image } from "blitz"
 type weatherDataType = z.infer<typeof weatherDataSchema>
 
 interface AppProps {
-  zipcode?: number
+  zipcode?: string
   changeLocation: Function
 }
 
@@ -33,7 +33,7 @@ export const WeatherDisplay = (props: AppProps) => {
         const data = await fetch(endpoint).then((blob) => blob.json())
         setWeatherData(weatherDataSchema.parse(data))
       } catch (error: any) {
-        console.log(error)
+        alert(error)
       }
     }
     getWeather()

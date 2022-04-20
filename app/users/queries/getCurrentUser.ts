@@ -1,6 +1,5 @@
 import { Ctx } from "blitz"
 import db from "db"
-import { optional } from "zod"
 
 export default async function getCurrentUser(_ = null, { session }: Ctx) {
   if (!session.userId) return null

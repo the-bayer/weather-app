@@ -1,16 +1,7 @@
 import logout from "app/auth/mutations/logout"
 import { useCurrentUser } from "app/core/hooks/useCurrentUser"
-import {
-  BlitzPage,
-  useQuery,
-  useSession,
-  Router,
-  useRouter,
-  useMutation,
-  Routes,
-  Link,
-} from "blitz"
-import { Suspense, useState } from "react"
+import { BlitzPage, Router, useMutation, Routes, Link } from "blitz"
+import { Suspense, useMemo, useState } from "react"
 import DashBoard from "../components/dashboard"
 import SearchBar from "../components/searchBar"
 
@@ -29,13 +20,16 @@ const PageContent = () => {
   // still need to initalize to default zip
   const [logoutMutation] = useMutation(logout)
   const user = useCurrentUser()
-  const [zipcode, setZipcode] = useState<number>()
+  const [zipcode, setZipcode] = useState<string>()
   const [location, setLocation] = useState<string>()
 
-  const session = useSession()
+  // intializes page to default zipcode, occurs on refresh
+  useMemo(() => {
+    Router.push({ query: { zipcode: user?.defaultzip } })
+  }, [user?.defaultzip])
 
   // callback from searchbar to change state
-  function changeArea(location: string, zipcode: number) {
+  function changeArea(location: string, zipcode: string) {
     setLocation(location)
     setZipcode(zipcode)
   }

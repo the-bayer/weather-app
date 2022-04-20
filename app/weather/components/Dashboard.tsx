@@ -5,7 +5,7 @@ import FavoriteCard from "./favoriteCard"
 
 interface AppProps {
   location?: string
-  zipcode?: number
+  zipcode?: string
 }
 
 const DashBoard = ({ location, zipcode }: AppProps) => {
@@ -24,7 +24,7 @@ const DashBoard = ({ location, zipcode }: AppProps) => {
             await createAreaMutation({ location, zipcode })
             refetch()
           } catch (error) {
-            console.log(error)
+            alert(error)
           }
         }}
       >

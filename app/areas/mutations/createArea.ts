@@ -1,9 +1,9 @@
-import { NotFoundError, resolver, useQuery, useSession } from "blitz"
+import { resolver } from "blitz"
 import db from "db"
 import { z } from "zod"
 
 const CreateArea = z.object({
-  zipcode: z.number(),
+  zipcode: z.string(),
   location: z.string(),
 })
 
@@ -18,10 +18,10 @@ export default resolver.pipe(
       },
     })
 
+    // can't throw error on the browser here
     if (userAreas) {
       for (let area of userAreas) {
         if (zipcode === area.zipcode) {
-          // throw error
           console.log("Favorite already exists")
           exists = true
         }

@@ -1,5 +1,4 @@
 interface AppProps {
-  zipcode?: number
   location?: string
 }
 
