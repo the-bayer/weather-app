@@ -28,7 +28,7 @@ export default resolver.pipe(
       }
     }
 
-    if (!exists) {
+    if (!exists || session.userId) {
       const area = await db.area.create({
         data: {
           zipcode: zipcode,
