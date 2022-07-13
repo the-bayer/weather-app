@@ -12,7 +12,7 @@
           "id": "my-blitz",
           "name": "My Blitz",
           "type": "fargate",
-          "cpu": 0.25,
+          "cpu": true,
           "memory": 0.5,
           "domain": "www.example.com",
           "minInstances": 1,
